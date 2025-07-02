@@ -9,7 +9,6 @@ const {
 
 const router = express.Router();
 
-// Validation middleware for team member creation
 const validateTeamMember = [
     body('firstName')
         .notEmpty()
@@ -30,7 +29,6 @@ const validateTeamMember = [
         .withMessage('Last name can only contain letters and spaces'),
 ];
 
-// Routes
 router.get('/', getAllTeamMembers);
 router.post('/', validateTeamMember, createTeamMember);
 router.post('/batch', createTeamMembers);

@@ -10,24 +10,19 @@ const {
 
 const router = express.Router();
 
-// Configure Multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Create uploads directory if it doesn't exist
         const uploadPath = 'uploads/temp';
         require('fs').mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
-        // Generate unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, 'logo-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
 
-// File filter for images only
 const fileFilter = (req, file, cb) => {
-    // Check if file is an image
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
     } else {
@@ -35,16 +30,14 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Configure multer
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB limit
+        fileSize: 5 * 1024 * 1024, 
     }
 });
 
-// Validation middleware for project creation
 const validateProject = [
     body('clientCode')
         .notEmpty()
@@ -109,10 +102,8 @@ const validateProject = [
     body('teamMembers')
         .optional()
         .custom((value) => {
-            // Skip validation if empty
             if (!value) return true;
             
-            // Handle both array and string (JSON) formats
             let teamMembers = value;
             
             if (typeof value === 'string') {
@@ -139,7 +130,6 @@ const validateProject = [
         })
 ];
 
-// Error handling middleware for multer
 const handleMulterError = (error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
@@ -166,12 +156,10 @@ const handleMulterError = (error, req, res, next) => {
     next(error);
 };
 
-// Routes
 router.get('/', getAllProjects);
 
 router.get('/:id', getProjectById);
 
-// Create project with file upload
 router.post('/', 
     upload.single('companyLogo'), 
     handleMulterError,

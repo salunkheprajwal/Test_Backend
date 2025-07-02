@@ -19,15 +19,12 @@ const teamMemberSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// Virtual for full name
 teamMemberSchema.virtual('fullName').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
 
-// Compound index for unique name combination
 teamMemberSchema.index({ firstName: 1, lastName: 1 }, { unique: true });
 
-// Pre-save middleware to handle case-insensitive uniqueness
 teamMemberSchema.pre('save', async function(next) {
     if (this.isModified('firstName') || this.isModified('lastName')) {
         const existingMember = await this.constructor.findOne({
@@ -45,7 +42,6 @@ teamMemberSchema.pre('save', async function(next) {
     next();
 });
 
-// Instance method to get display name
 teamMemberSchema.methods.getDisplayName = function() {
     return `${this.firstName} ${this.lastName}`;
 };

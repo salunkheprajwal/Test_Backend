@@ -163,7 +163,7 @@ const createProject = async (req, res) => {
             try {
                 const cloudinaryResult = await uploadToCloudinary(req.file.path);
                 projectData.companyLogo = cloudinaryResult.url;
-                projectData.companyLogoPublicId = cloudinaryResult.publicId; // Store for deletion later
+                projectData.companyLogoPublicId = cloudinaryResult.publicId; 
             } catch (uploadError) {
                 console.error('Error uploading to Cloudinary:', uploadError);
                 return res.status(500).json({
